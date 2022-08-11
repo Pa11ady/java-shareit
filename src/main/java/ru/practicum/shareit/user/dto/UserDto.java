@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserDto {
-    private String name;
-    private String email;
+    private Long id;
+    private String name;        //имя или логин пользователя;
+    private String email;       //адрес электронной почты (уникален)
 }

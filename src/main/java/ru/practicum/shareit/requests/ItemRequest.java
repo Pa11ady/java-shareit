@@ -12,5 +12,5 @@ public class ItemRequest {
     private Long id;
     private String description;    //описание вещи;
     private User requestor;        //пользователь, создавший запрос
-    private LocalDateTime create;   //dата и время создания запроса
+    private LocalDateTime create;  //дата и время создания запроса
 }

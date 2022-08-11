@@ -13,5 +13,5 @@ public class Item {
     private String description;     //развёрнутое описание
     private boolean available;      //доступна или нет вещь для аренды;
     private User owner;             //владелец вещи;
-    private ItemRequest request;    //если создано по запросу, то ссылка на соответствующий запро
+    private ItemRequest request;    //если создано по запросу, то ссылка на соответствующий запроc
 }
