@@ -1,24 +1,44 @@
 package ru.practicum.shareit.user;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.validation.Valid;
+import java.util.List;
 
-/**
- * // TODO .
- */
 @RestController
 @RequestMapping(path = "/users")
 public class UserController {
-    @PostMapping
-    public UserDto create(@Valid @RequestBody UserDto user) {
-        //return service.create(user);
-        return user;
+    private final UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
+    @PostMapping
+    public UserDto create(@Valid @RequestBody UserDto user) {
+        return userService.create(user);
+    }
 
+    @GetMapping("/{id}")
+    public UserDto findById(@PathVariable Long id) {
+        return userService.findById(id);
+    }
+
+    @GetMapping
+    public List<UserDto> findAll() {
+        return userService.findAll();
+    }
+
+    @PatchMapping
+    public UserDto update(@Valid @RequestBody UserDto user) {
+        return userService.update(user);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        userService.delete(id);
+    }
 }
