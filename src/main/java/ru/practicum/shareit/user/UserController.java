@@ -32,9 +32,9 @@ public class UserController {
         return userService.findAll();
     }
 
-    @PatchMapping
-    public UserDto update(@Valid @RequestBody UserDto user) {
-        return userService.update(user);
+    @PatchMapping("/{id}")
+    public UserDto update(@PathVariable Long id, @RequestBody UserDto user) {
+        return userService.update(id, user);
     }
 
     @DeleteMapping("/{id}")

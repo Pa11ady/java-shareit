@@ -14,18 +14,32 @@ public class InMemoryUserRepositoryImp extends AbstractInMemoryRepository<User> 
     public User create(User user) {
         user = super.create(user);
         emails.add(user.getEmail());
-        return user;
+        return new User(user);
+    }
+
+    @Override
+    public User findById(Long id) {
+        return new User(super.findById(id));
     }
 
     @Override
     public User update(User user) {
+        String oldEmail = super.findById(user.getId()).getEmail();
         user = super.update(user);
+        emails.remove(oldEmail);
         emails.add(user.getEmail());
-        return user;
+        return new User(user);
     }
 
     @Override
     public boolean containsEmail(String email) {
         return emails.contains(email);
+    }
+
+    @Override
+    public void delete(Long id) {
+        User oldUser = super.findById(id);
+        emails.remove(oldUser.getEmail());
+        super.delete(id);
     }
 }

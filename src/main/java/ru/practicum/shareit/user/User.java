@@ -9,4 +9,15 @@ import ru.practicum.shareit.common.AbstractEntity;
 public class User extends AbstractEntity {
     private String name;        //имя или логин пользователя;
     private String email;       //адрес электронной почты (уникален)
+
+    public  User() {
+    }
+
+    public User(User user) {
+        super(user.getId());
+        name = user.getName();
+        email = user.getEmail();
+    }
+
+
 }

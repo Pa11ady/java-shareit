@@ -2,7 +2,6 @@ package ru.practicum.shareit.booking.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 
@@ -16,7 +15,7 @@ public class BookingDto {
     private LocalDateTime end;      //дата и время конца бронирования
     private Item item;              //вещь, которую бронируют
     private User booker;            //пользователь, который бронирует
-    private Booking.Status status;          //статус бронирования
+    private Status status;          //статус бронирования
 
     public enum Status {
         WAITING,        //новое бронирование, ожидает одобрения

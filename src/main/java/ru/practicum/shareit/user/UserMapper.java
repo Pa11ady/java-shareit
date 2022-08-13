@@ -4,8 +4,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.user.dto.UserDto;
 
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +23,7 @@ final class UserMapper {
         return result;
     }
 
-    public static User mapToNewUser(UserDto userDto) {
+    public static User mapToUser(UserDto userDto) {
         User user = new User();
         user.setEmail(userDto.getEmail());
         user.setName(userDto.getName());
