@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.common.exception.UserAlreadyExistException;
+import ru.practicum.shareit.user.dto.PatchUserDto;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
@@ -38,14 +39,14 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public UserDto update(Long id, UserDto userDto) {
+    public UserDto update(Long id, PatchUserDto patchUserDto) {
         User user = userRepository.findById(id);
-        if (userDto.getName() != null) {
-            user.setName(userDto.getName());
+        if (patchUserDto.getName() != null) {
+            user.setName(patchUserDto.getName());
         }
-        if (userDto.getEmail() != null) {
-            checkEmail(userDto.getEmail());
-            user.setEmail(userDto.getEmail());
+        if (patchUserDto.getEmail() != null) {
+            checkEmail(patchUserDto.getEmail());
+            user.setEmail(patchUserDto.getEmail());
         }
 
         return UserMapper.mapToUserDto(userRepository.update(user));

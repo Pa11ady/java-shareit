@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user;
 
+import ru.practicum.shareit.user.dto.PatchUserDto;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public interface UserService {
 
     List<UserDto> findAll();
 
-    UserDto update(Long id, UserDto user);
+    UserDto update(Long id, PatchUserDto patchUserDto);
 
     void delete(Long id);
 }

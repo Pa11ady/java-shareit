@@ -38,8 +38,8 @@ public class InMemoryUserRepositoryImp extends AbstractInMemoryRepository<User> 
 
     @Override
     public void delete(Long id) {
-        User oldUser = super.findById(id);
-        emails.remove(oldUser.getEmail());
+        String oldEmail = super.findById(id).getEmail();
+        emails.remove(oldEmail);
         super.delete(id);
     }
 }
