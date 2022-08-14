@@ -19,7 +19,11 @@ public class InMemoryUserRepositoryImp extends AbstractInMemoryRepository<User> 
 
     @Override
     public User findById(Long id) {
-        return new User(super.findById(id));
+        User user = super.findById(id);
+        if (user == null) {
+            return null;
+        }
+        return new User(user);
     }
 
     @Override

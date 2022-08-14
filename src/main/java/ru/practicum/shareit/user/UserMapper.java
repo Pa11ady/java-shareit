@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-final class UserMapper {
+public class UserMapper {
     public static UserDto mapToUserDto(User user) {
         return new UserDto(user.getId(), user.getName(), user.getEmail());
     }

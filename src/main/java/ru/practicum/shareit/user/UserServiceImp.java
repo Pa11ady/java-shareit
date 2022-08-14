@@ -3,6 +3,7 @@ package ru.practicum.shareit.user;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.common.exception.NotFoundException;
 import ru.practicum.shareit.common.exception.UserAlreadyExistException;
 import ru.practicum.shareit.user.dto.PatchUserDto;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -29,6 +30,12 @@ public class UserServiceImp implements UserService {
     @Override
     public UserDto findById(Long id) {
         User user = userRepository.findById(id);
+        if (user == null) {
+            String message = ("Пользователь с id " +
+                    id + " не найден!.");
+            log.warn(message);
+            throw new NotFoundException(message);
+        }
         return UserMapper.mapToUserDto(user);
     }
 

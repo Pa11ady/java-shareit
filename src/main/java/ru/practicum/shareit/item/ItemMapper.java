@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-final class ItemMapper {
+public class ItemMapper {
     public static ItemDto mapToItemDto(Item item) {
         return new ItemDto(
                 item.getId(),
