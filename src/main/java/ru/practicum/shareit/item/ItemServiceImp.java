@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.common.exception.NotFoundException;
 import ru.practicum.shareit.common.exception.PermissionException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.PatchItemDto;
@@ -34,7 +35,14 @@ public class ItemServiceImp implements ItemService {
 
     @Override
     public ItemDto findById(Long itemId) {
-        return null;
+        Item item = itemRepository.findById(itemId);
+        if (item == null) {
+            String message = ("Предмет с id " +
+                    itemId + " не найден!.");
+            log.warn(message);
+            throw new NotFoundException(message);
+        }
+        return ItemMapper.mapToItemDto(item);
     }
 
     @Override
