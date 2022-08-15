@@ -1,7 +1,9 @@
 package ru.practicum.shareit.item;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.common.exception.PermissionException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.PatchItemDto;
 import ru.practicum.shareit.item.model.Item;
@@ -9,9 +11,9 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserService;
 
-import javax.validation.ValidationException;
 import java.util.List;
 
+@Slf4j
 @Service
 public class ItemServiceImp implements ItemService {
     private final ItemRepository itemRepository;
@@ -25,9 +27,6 @@ public class ItemServiceImp implements ItemService {
 
     @Override
     public ItemDto create(Long userId, ItemDto itemDto) {
-       /* if (itemDto.getAvailable() == null) {
-            throw new ValidationException("review isPositive не заполнено!");
-        }*/
         User owner = UserMapper.mapToUser(userService.findById(userId));
         Item item = itemRepository.create(ItemMapper.mapToItem(owner, null, itemDto));
         return ItemMapper.mapToItemDto(item);
@@ -50,6 +49,28 @@ public class ItemServiceImp implements ItemService {
 
     @Override
     public ItemDto update(Long userId, Long itemId, PatchItemDto patchItemDto) {
-        return null;
+        Item item = itemRepository.findById(itemId);
+        checkPermissions(userId, item);
+
+        if (patchItemDto.getName() != null) {
+            item.setName(patchItemDto.getName());
+        }
+        if (patchItemDto.getDescription() != null) {
+            item.setDescription(patchItemDto.getDescription());
+        }
+        if (patchItemDto.getAvailable() != null) {
+            item.setAvailable(patchItemDto.getAvailable());
+        }
+
+        return ItemMapper.mapToItemDto(itemRepository.update(item));
+    }
+
+    private void checkPermissions(Long userId, Item item) {
+        if (userId != item.getOwner().getId()) {
+            String message = ("Пользователь с id " +
+                    userId + " не владелец предмета с id " + item.getId());
+            log.warn(message);
+            throw new PermissionException(message);
+        }
     }
 }

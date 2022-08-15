@@ -9,6 +9,16 @@ import java.util.List;
 
 @Component
 public class InMemoryItemRepositoryImp extends AbstractInMemoryRepository<Item> implements ItemRepository {
+
+    @Override
+    public Item findById(Long id) {
+        Item item = super.findById(id);
+        if (item == null) {
+            return null;
+        }
+        return new Item(item);
+    }
+
     @Override
     public List<ItemDto> findAllByUserID(Long userId) {
         return null;
