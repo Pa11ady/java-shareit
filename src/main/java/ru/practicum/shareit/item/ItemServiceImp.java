@@ -47,7 +47,9 @@ public class ItemServiceImp implements ItemService {
 
     @Override
     public List<ItemDto> findAllByUserID(Long userId) {
-        return null;
+        userService.findById(userId);   //исключение, если пользователь не найден
+        List<Item> items = itemRepository.findAllByUserID(userId);
+        return ItemMapper.mapToItemDto(items);
     }
 
     @Override
