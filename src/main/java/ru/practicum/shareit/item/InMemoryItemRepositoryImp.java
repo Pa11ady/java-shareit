@@ -22,12 +22,16 @@ public class InMemoryItemRepositoryImp extends AbstractInMemoryRepository<Item> 
     @Override
     public List<Item> findAllByUserID(Long userId) {
         return super.findAll().stream()
-                .filter(x -> x.getOwner().getId() == userId)
+                .filter(x -> x.getOwner().getId().equals(userId))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Item> search(String text) {
-        return null;
+        String lowerTxt = text.toLowerCase();
+        return super.findAll().stream()
+                .filter(x -> (x.getName().toLowerCase().contains(lowerTxt) ||
+                        x.getDescription().toLowerCase().contains(lowerTxt)) && x.isAvailable())
+                .collect(Collectors.toList());
     }
 }

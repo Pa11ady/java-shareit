@@ -12,7 +12,9 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserService;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -37,8 +39,7 @@ public class ItemServiceImp implements ItemService {
     public ItemDto findById(Long itemId) {
         Item item = itemRepository.findById(itemId);
         if (item == null) {
-            String message = ("Предмет с id " +
-                    itemId + " не найден!.");
+            String message = ("Предмет с id " + itemId + " не найден!.");
             log.warn(message);
             throw new NotFoundException(message);
         }
@@ -54,7 +55,11 @@ public class ItemServiceImp implements ItemService {
 
     @Override
     public List<ItemDto> search(String text) {
-        return null;
+        if (text.isBlank()) {
+            return Collections.emptyList();
+        }
+       List<Item> items = itemRepository.search(text);
+       return ItemMapper.mapToItemDto(items);
     }
 
     @Override
@@ -76,7 +81,7 @@ public class ItemServiceImp implements ItemService {
     }
 
     private void checkPermissions(Long userId, Item item) {
-        if (userId != item.getOwner().getId()) {
+        if (!Objects.equals(userId, item.getOwner().getId())) {
             String message = ("Пользователь с id " +
                     userId + " не владелец предмета с id " + item.getId());
             log.warn(message);
