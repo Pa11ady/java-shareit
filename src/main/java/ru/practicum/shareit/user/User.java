@@ -18,6 +18,4 @@ public class User extends AbstractEntity {
         name = user.getName();
         email = user.getEmail();
     }
-
-
 }

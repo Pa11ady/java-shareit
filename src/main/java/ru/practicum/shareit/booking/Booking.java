@@ -15,12 +15,5 @@ public class Booking {
     private LocalDateTime end;      //дата и время конца бронирования
     private Item item;              //вещь, которую бронируют
     private User booker;            //пользователь, который бронирует
-    private Status status;          //статус бронирования
-
-    public enum Status {
-        WAITING,        //новое бронирование, ожидает одобрения
-        APPROVED,       //бронирование подтверждено владельцем
-        REJECTED,       //бронирование отклонено владельцем
-        CANCELED        //бронирование отменено создателем.
-    }
+    private BookingStatus status;   //статус бронирования
 }
