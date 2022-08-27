@@ -5,6 +5,7 @@ import lombok.Setter;
 import ru.practicum.shareit.common.AbstractEntity;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -29,5 +30,18 @@ public class User {
         id = user.getId();
         name = user.getName();
         email = user.getEmail();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
