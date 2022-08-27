@@ -1,8 +1,9 @@
 package ru.practicum.shareit.item;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.common.exception.NotFoundException;
 import ru.practicum.shareit.common.exception.PermissionException;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -18,16 +19,13 @@ import java.util.Objects;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class ItemServiceImp implements ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
 
-    @Autowired
-    public ItemServiceImp(ItemRepository itemRepository, UserService userService) {
-        this.itemRepository = itemRepository;
-        this.userService = userService;
-    }
-
+    @Transactional
     @Override
     public ItemDto create(Long userId, ItemDto itemDto) {
         User owner = UserMapper.mapToUser(userService.findById(userId));
@@ -58,6 +56,7 @@ public class ItemServiceImp implements ItemService {
        return ItemMapper.mapToItemDto(items);
     }
 
+    @Transactional
     @Override
     public ItemDto update(Long userId, Long itemId, PatchItemDto patchItemDto) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> throwNotFoundException(itemId));
