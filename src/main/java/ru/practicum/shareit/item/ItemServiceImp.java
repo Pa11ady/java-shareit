@@ -31,25 +31,20 @@ public class ItemServiceImp implements ItemService {
     @Override
     public ItemDto create(Long userId, ItemDto itemDto) {
         User owner = UserMapper.mapToUser(userService.findById(userId));
-        Item item = itemRepository.create(ItemMapper.mapToItem(owner, null, itemDto));
+        Item item = itemRepository.save(ItemMapper.mapToItem(owner, null, itemDto));
         return ItemMapper.mapToItemDto(item);
     }
 
     @Override
     public ItemDto findById(Long itemId) {
-        Item item = itemRepository.findById(itemId);
-        if (item == null) {
-            String message = ("Предмет с id " + itemId + " не найден!.");
-            log.warn(message);
-            throw new NotFoundException(message);
-        }
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> throwNotFoundException(itemId));
         return ItemMapper.mapToItemDto(item);
     }
 
     @Override
     public List<ItemDto> findAllByUserID(Long userId) {
         userService.findById(userId);   //исключение, если пользователь не найден
-        List<Item> items = itemRepository.findAllByUserID(userId);
+        List<Item> items = itemRepository.findAllByOwnerId(userId);
         return ItemMapper.mapToItemDto(items);
     }
 
@@ -59,12 +54,13 @@ public class ItemServiceImp implements ItemService {
             return Collections.emptyList();
         }
        List<Item> items = itemRepository.search(text);
+
        return ItemMapper.mapToItemDto(items);
     }
 
     @Override
     public ItemDto update(Long userId, Long itemId, PatchItemDto patchItemDto) {
-        Item item = itemRepository.findById(itemId);
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> throwNotFoundException(itemId));
         checkPermissions(userId, item);
 
         if (patchItemDto.getName() != null) {
@@ -77,7 +73,7 @@ public class ItemServiceImp implements ItemService {
             item.setAvailable(patchItemDto.getAvailable());
         }
 
-        return ItemMapper.mapToItemDto(itemRepository.update(item));
+        return ItemMapper.mapToItemDto(itemRepository.save(item));
     }
 
     private void checkPermissions(Long userId, Item item) {
@@ -87,5 +83,11 @@ public class ItemServiceImp implements ItemService {
             log.warn(message);
             throw new PermissionException(message);
         }
+    }
+
+    private NotFoundException throwNotFoundException(Long id) {
+        String message = ("Предмет с id " + id + " не найден!");
+        log.warn(message);
+        throw new NotFoundException(message);
     }
 }

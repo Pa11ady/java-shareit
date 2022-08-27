@@ -2,7 +2,6 @@ package ru.practicum.shareit.user;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.practicum.shareit.common.AbstractEntity;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -26,11 +25,11 @@ public class User {
     public  User() {
     }
 
-    public User(User user) {
+    /*public User(User user) {
         id = user.getId();
         name = user.getName();
         email = user.getEmail();
-    }
+    }*/
 
     @Override
     public boolean equals(Object o) {

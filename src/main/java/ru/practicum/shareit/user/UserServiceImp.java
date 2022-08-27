@@ -42,7 +42,7 @@ public class UserServiceImp implements UserService {
     @Transactional
     @Override
     public UserDto update(Long id, PatchUserDto patchUserDto) {
-        User user = userRepository.findById(id).orElseThrow(()->throwNotFoundException(id));
+        User user = userRepository.findById(id).orElseThrow(() -> throwNotFoundException(id));
         if (patchUserDto.getName() != null) {
             user.setName(patchUserDto.getName());
         }
