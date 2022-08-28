@@ -22,15 +22,6 @@ public class User {
     @Column(nullable = false)
     private String email;       //адрес электронной почты (уникален)
 
-    public  User() {
-    }
-
-    /*public User(User user) {
-        id = user.getId();
-        name = user.getName();
-        email = user.getEmail();
-    }*/
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
