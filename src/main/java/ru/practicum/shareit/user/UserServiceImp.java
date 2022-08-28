@@ -22,7 +22,7 @@ public class UserServiceImp implements UserService {
     @Transactional
     @Override
     public UserDto create(UserDto userDto) {
-        checkEmail(userDto.getEmail());
+        //checkEmail(userDto.getEmail());
         User user = userRepository.save(UserMapper.mapToUser(userDto));
         return UserMapper.mapToUserDto(user);
     }
