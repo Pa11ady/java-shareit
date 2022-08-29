@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface BookingService {
 
-    BookingDto create(BookingDto bookingDto);
+    BookingDto create(Long userId, BookingDto bookingDto);
 
     BookingDto findById(Long userId, Long bookingId);
 

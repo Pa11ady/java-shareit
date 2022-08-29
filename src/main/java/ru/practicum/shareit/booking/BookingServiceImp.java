@@ -13,8 +13,11 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BookingServiceImp implements BookingService {
+    private final BookingRepository bookingRepository;
+
+    @Transactional
     @Override
-    public BookingDto create(BookingDto bookingDto) {
+    public BookingDto create(Long userId, BookingDto bookingDto) {
         return null;
     }
 

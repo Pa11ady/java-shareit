@@ -14,8 +14,9 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping
-    public BookingDto create(@Valid @RequestBody BookingDto bookingDto) {
-        return bookingService.create(bookingDto);
+    public BookingDto create(@RequestHeader("X-Sharer-User-Id") Long userId,
+                             @Valid @RequestBody BookingDto bookingDto) {
+        return bookingService.create(userId, bookingDto);
     }
 
     @GetMapping("/{bookingId}")
@@ -26,12 +27,12 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDto> findUserBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                         @RequestParam String stateParam) {
+                                            @RequestParam String stateParam) {
         //получить бронирования текущего пользователя (его)
         return bookingService.findUserBooking(userId, stateParam);
     }
 
-    @GetMapping("/owner")
+   @GetMapping("/owner")
     public List<BookingDto> findItemBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
                                          @RequestParam(defaultValue = "ALL") String stateParam) {
         //все бронирования Вещей пользователя (другими)
@@ -44,6 +45,4 @@ public class BookingController {
         //Подтверждение или отклонение запроса на бронирование
         return bookingService.approveBooking(userId, bookingId, approved);
     }
-
-
 }
