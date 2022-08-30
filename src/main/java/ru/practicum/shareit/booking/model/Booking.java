@@ -8,6 +8,7 @@ import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -20,10 +21,10 @@ public class Booking {
     private Long id;
 
     @Column(name = "start_date")
-    private Instant start;    //дата и время начала бронирования
+    private  LocalDateTime start;    //дата и время начала бронирования
 
     @Column(name = "end_date")
-    private Instant end;      //дата и время конца бронирования
+    private LocalDateTime end;      //дата и время конца бронирования
 
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
