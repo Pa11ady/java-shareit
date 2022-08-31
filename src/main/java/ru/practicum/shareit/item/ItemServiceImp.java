@@ -75,7 +75,7 @@ public class ItemServiceImp implements ItemService {
         return ItemMapper.mapToItemDto(itemRepository.save(item));
     }
 
-    private void checkPermissions(Long userId, Item item) {
+    public void checkPermissions(Long userId, Item item) {
         if (!Objects.equals(userId, item.getOwner().getId())) {
             String message = ("Пользователь с id " +
                     userId + " не владелец предмета с id " + item.getId());
