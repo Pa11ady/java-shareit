@@ -15,10 +15,6 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BookingMapper {
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter
-            .ofPattern("yyyy.MM.dd hh:mm:ss")
-            .withZone(ZoneOffset.UTC);
-
     public static BookingDto mapToBookingDto(Booking booking) {
         BookingDto bookingDto = new BookingDto();
         bookingDto.setId(booking.getId());

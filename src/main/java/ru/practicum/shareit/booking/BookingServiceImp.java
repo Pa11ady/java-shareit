@@ -42,7 +42,7 @@ public class BookingServiceImp implements BookingService {
         checkBookingAvailable(booking);
 
         if (bookerId.equals(item.getOwner().getId())) {
-            String message = ("Предмет " + itemId + " не доступен для бронирования владельцем " + bookerId);
+            String message = "Предмет " + itemId + " не доступен для бронирования владельцем " + bookerId;
             log.warn(message);
             throw new PermissionException(message);
         }
@@ -52,7 +52,18 @@ public class BookingServiceImp implements BookingService {
 
     @Override
     public BookingDto findById(Long userId, Long bookingId) {
-        return null;
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> throwNotFoundItemException(
+                "Бронирование с id " + bookingId + " не найдено!"));
+
+        Long bookerId = booking.getBooker().getId();
+        Long ownerId = booking.getItem().getOwner().getId();
+
+        if (!userId.equals(bookerId) && !userId.equals(ownerId)) {
+            String message = "У пользователя " + userId + " нет прав на просмотр бронирования " + bookingId ;
+            log.warn(message);
+            throw new PermissionException(message);
+        }
+        return BookingMapper.mapToBookingDto(booking);
     }
 
     @Override

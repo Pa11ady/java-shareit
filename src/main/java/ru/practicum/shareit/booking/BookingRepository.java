@@ -14,4 +14,5 @@ public interface BookingRepository  extends JpaRepository<Booking, Long> {
             "b.item.id = :itemId and " +
             "b.status = 'APPROVED'")
     List<Booking> findAllByDateAndId(Long itemId, LocalDateTime start, LocalDateTime end);
+    List<Booking> findByBookerIdAndEndIsBefore(Long bookerId, LocalDateTime end);
 }
