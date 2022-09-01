@@ -16,6 +16,7 @@ import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -68,7 +69,31 @@ public class BookingServiceImp implements BookingService {
 
     @Override
     public List<BookingDto> findUserBooking(Long userId, String stateParam) {
-        return null;
+        BookingState state = BookingState.valueOf(stateParam);
+        userService.findById(userId);
+        List<Booking> bookings = null;
+
+        switch (state) {
+            case ALL:
+                bookings = bookingRepository.findALLByBookerId(userId);
+                break;
+            case PAST:
+                break;
+            case FUTURE:
+                break;
+            case CURRENT:
+                break;
+            case WAITING:
+                bookings = bookingRepository.findALLByBookerIdAndStatus(userId, BookingStatus.WAITING);
+                break;
+            case REJECTED:
+                bookings = bookingRepository.findALLByBookerIdAndStatus(userId, BookingStatus.REJECTED);
+        }
+
+        bookings.sort(Comparator.comparing(Booking::getStart).reversed());
+
+        return BookingMapper.mapToBookingDto(bookings);
+
     }
 
     @Override
