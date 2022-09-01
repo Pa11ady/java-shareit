@@ -7,10 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.PostBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.common.exception.BookingAlreadyApproveException;
-import ru.practicum.shareit.common.exception.IncorrectDateException;
-import ru.practicum.shareit.common.exception.ItemNotAvailableException;
-import ru.practicum.shareit.common.exception.NotFoundException;
+import ru.practicum.shareit.common.exception.*;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.item.model.Item;
@@ -35,12 +32,21 @@ public class BookingServiceImp implements BookingService {
     @Override
     public BookingDto create(Long userId, PostBookingDto postBookingDto) {
         User booker = UserMapper.mapToUser(userService.findById(userId));
+        Long bookerId = booker.getId();
         Long itemId = postBookingDto.getItemId();
         Item item = itemRepository.findById(itemId).orElseThrow(() -> throwNotFoundItemException("Предмет с id " +
                 itemId + " не найден!"));
         checkItemAvailable(item);
         Booking booking = BookingMapper.mapToBooking(booker, item, postBookingDto, BookingStatus.WAITING);
-        checkDate(booking);
+        checkBookingDate(booking);
+        checkBookingAvailable(booking);
+
+        if (bookerId.equals(item.getOwner().getId())) {
+            String message = ("Предмет " + itemId + " не доступен для бронирования владельцем " + bookerId);
+            log.warn(message);
+            throw new PermissionException(message);
+        }
+
         return BookingMapper.mapToBookingDto(bookingRepository.save(booking));
     }
 
@@ -59,16 +65,16 @@ public class BookingServiceImp implements BookingService {
         return null;
     }
 
+    @Transactional
     @Override
     public BookingDto approveBooking(Long userId, Long bookingId, Boolean approved) {
-        User user = UserMapper.mapToUser(userService.findById(userId));
+        userService.findById(userId);
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> throwNotFoundItemException(
                 "Бронирование с id " + bookingId + " не найдено!"));
         itemService.checkPermissions(userId, booking.getItem());
-        checkStatus(booking);
+        checkBookingStatus(booking);
         BookingStatus status = (approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);
         booking.setStatus(status);
-
 
         return BookingMapper.mapToBookingDto(bookingRepository.save(booking));
     }
@@ -80,13 +86,13 @@ public class BookingServiceImp implements BookingService {
 
     private void checkItemAvailable(Item item) {
         if (!item.isAvailable()) {
-            String message = ("Товар " + item.getId() + " не доступен для бронирования");
+            String message = ("Предмет " + item.getId() + " не доступен для бронирования");
             log.warn(message);
             throw new ItemNotAvailableException(message);
         }
     }
 
-    private void checkDate(Booking booking) {
+    private void checkBookingDate(Booking booking) {
         if (booking.getStart().isBefore(LocalDateTime.now()) || booking.getStart().isAfter(booking.getEnd())) {
             String message = ("Некорректная дата бронирования");
             log.warn(message);
@@ -94,11 +100,21 @@ public class BookingServiceImp implements BookingService {
         }
     }
 
-    private void checkStatus(Booking booking) {
+    private void checkBookingStatus(Booking booking) {
         if (!booking.getStatus().equals(BookingStatus.WAITING)) {
             String message = ("Бронирование уже одобрено");
             log.warn(message);
             throw new BookingAlreadyApproveException(message);
+        }
+    }
+
+    private void checkBookingAvailable(Booking booking) {
+        Long itemId = booking.getItem().getId();
+        List<Booking> bookings = bookingRepository.findAllByDateAndId(itemId, booking.getStart(), booking.getEnd());
+        if (bookings.size() != 0) {
+            String message = ("Товар " + itemId + " не доступен для бронирования");
+            log.warn(message);
+            throw new ItemNotAvailableException(message);
         }
     }
 }

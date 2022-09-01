@@ -26,7 +26,7 @@ public class Booking {
     @Column(name = "end_date")
     private LocalDateTime end;      //дата и время конца бронирования
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "item_id", nullable = false)
     private Item item;        //вещь, которую бронируют
 
