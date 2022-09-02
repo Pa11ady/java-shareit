@@ -77,15 +77,14 @@ public class ItemServiceImp implements ItemService {
 
     public void checkPermissions(Long userId, Item item) {
         if (!Objects.equals(userId, item.getOwner().getId())) {
-            String message = ("Пользователь с id " +
-                    userId + " не владелец предмета с id " + item.getId());
+            String message = "Пользователь с id " + userId + " не владелец предмета с id " + item.getId();
             log.warn(message);
             throw new PermissionException(message);
         }
     }
 
     private NotFoundException throwNotFoundException(Long id) {
-        String message = ("Предмет с id " + id + " не найден!");
+        String message = "Предмет с id " + id + " не найден!";
         log.warn(message);
         throw new NotFoundException(message);
     }

@@ -63,16 +63,14 @@ public class UserServiceImp implements UserService {
 
     private void checkEmail(String email) {
       if (userRepository.existsByEmail(email)) {
-            String message = ("Пользователь с электронной почтой " +
-                    email + " уже зарегистрирован.");
+            String message = "Пользователь с электронной почтой " + email + " уже зарегистрирован.";
             log.warn(message);
             throw new UserAlreadyExistException(message);
         }
     }
 
     private NotFoundException throwNotFoundException(Long id) {
-        String message = ("Пользователь с id " +
-                id + " не найден!.");
+        String message = "Пользователь с id " + id + " не найден!.";
         log.warn(message);
         return new NotFoundException(message);
     }

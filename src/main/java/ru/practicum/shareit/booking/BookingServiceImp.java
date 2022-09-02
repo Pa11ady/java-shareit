@@ -70,12 +70,7 @@ public class BookingServiceImp implements BookingService {
 
     @Override
     public List<BookingDto> findUserBooking(Long userId, String stateParam) {
-        BookingState state;
-        try {
-            state = BookingState.valueOf(stateParam);
-        } catch (IllegalArgumentException e) {
-            throw new StateIsNotSupportException("Unknown state: UNSUPPORTED_STATUS");
-        }
+        BookingState state = stateToEnum(stateParam);
         userService.findById(userId);
         List<Booking> bookings;
 
@@ -109,6 +104,9 @@ public class BookingServiceImp implements BookingService {
 
     @Override
     public List<BookingDto> findAllByUserID(Long userId, String stateParam) {
+        BookingState state = stateToEnum(stateParam);
+        userService.findById(userId);
+        List<Booking> bookings;
         return null;
     }
 
@@ -133,7 +131,7 @@ public class BookingServiceImp implements BookingService {
 
     private void checkItemAvailable(Item item) {
         if (!item.isAvailable()) {
-            String message = ("Предмет " + item.getId() + " не доступен для бронирования");
+            String message = "Предмет " + item.getId() + " не доступен для бронирования";
             log.warn(message);
             throw new ItemNotAvailableException(message);
         }
@@ -141,7 +139,7 @@ public class BookingServiceImp implements BookingService {
 
     private void checkBookingDate(Booking booking) {
         if (booking.getStart().isBefore(LocalDateTime.now()) || booking.getStart().isAfter(booking.getEnd())) {
-            String message = ("Некорректная дата бронирования");
+            String message = "Некорректная дата бронирования";
             log.warn(message);
             throw new IncorrectDateException(message);
         }
@@ -149,7 +147,7 @@ public class BookingServiceImp implements BookingService {
 
     private void checkBookingStatus(Booking booking) {
         if (!booking.getStatus().equals(BookingStatus.WAITING)) {
-            String message = ("Бронирование уже одобрено");
+            String message = "Бронирование уже одобрено";
             log.warn(message);
             throw new BookingAlreadyApproveException(message);
         }
@@ -159,9 +157,21 @@ public class BookingServiceImp implements BookingService {
         Long itemId = booking.getItem().getId();
         List<Booking> bookings = bookingRepository.findAllByDateAndId(itemId, booking.getStart(), booking.getEnd());
         if (bookings.size() != 0) {
-            String message = ("Товар " + itemId + " не доступен для бронирования");
+            String message = "Товар " + itemId + " не доступен для бронирования";
             log.warn(message);
             throw new ItemNotAvailableException(message);
         }
+    }
+
+    private BookingState stateToEnum(String stateParam) {
+        BookingState state;
+        try {
+            state = BookingState.valueOf(stateParam);
+        } catch (IllegalArgumentException e) {
+            String message = "Unknown state: UNSUPPORTED_STATUS";
+            log.warn(message);
+            throw new StateIsNotSupportException(message);
+        }
+        return state;
     }
 }
