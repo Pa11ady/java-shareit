@@ -14,6 +14,7 @@ import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserService;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,16 +35,29 @@ public class ItemServiceImp implements ItemService {
     }
 
     @Override
-    public ItemDto findById(Long itemId) {
+    public ItemDto findByItemId(Long userId, Long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> throwNotFoundException(itemId));
-        return ItemMapper.mapToItemDto(item);
+        ItemDto itemDto = ItemMapper.mapToItemDto(item);
+        Long ownerId = item.getOwner().getId();
+
+        if (ownerId.equals(userId)) {
+            itemDto = loadBookingDates(itemDto);
+        }
+        return itemDto;
+    }
+
+    private ItemDto loadBookingDates(ItemDto mapToItemDto) {
+        return mapToItemDto;
     }
 
     @Override
     public List<ItemDto> findAllByUserID(Long userId) {
         userService.findById(userId);   //исключение, если пользователь не найден
         List<Item> items = itemRepository.findAllByOwnerId(userId);
-        return ItemMapper.mapToItemDto(items);
+        items.sort(Comparator.comparing(Item::getId));
+        List<ItemDto> dtoItems = ItemMapper.mapToItemDto(items);
+        dtoItems.forEach(this::loadBookingDates);
+        return dtoItems;
     }
 
     @Override
