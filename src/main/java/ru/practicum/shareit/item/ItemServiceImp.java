@@ -4,8 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.common.exception.NotFoundException;
 import ru.practicum.shareit.common.exception.PermissionException;
+import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.PatchItemDto;
 import ru.practicum.shareit.item.model.Item;
@@ -13,10 +16,8 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserService;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -25,6 +26,7 @@ import java.util.Objects;
 public class ItemServiceImp implements ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
+    private final BookingRepository bookingRepository;
 
     @Transactional
     @Override
@@ -41,13 +43,28 @@ public class ItemServiceImp implements ItemService {
         Long ownerId = item.getOwner().getId();
 
         if (ownerId.equals(userId)) {
-            itemDto = loadBookingDates(itemDto);
+            loadBookingDates(itemDto);
         }
         return itemDto;
     }
 
-    private ItemDto loadBookingDates(ItemDto mapToItemDto) {
-        return mapToItemDto;
+    private void loadBookingDates(ItemDto itemDto) {
+        Optional<Booking> lastBooking = bookingRepository.findFirstByItemIdAndEndBeforeOrderByEndDesc(itemDto.getId(),
+                LocalDateTime.now());
+        if (lastBooking.isPresent()) {
+            Long id = lastBooking.get().getId();
+            Long bookerId = lastBooking.get().getBooker().getId();
+            itemDto.setLastBooking(new ItemBookingDto(id, bookerId));
+        }
+
+        Optional<Booking> nextBooking = bookingRepository.findFirstByItemIdAndStartAfterOrderByStart(itemDto.getId(),
+                LocalDateTime.now());
+        if (nextBooking.isPresent()) {
+            Long id = nextBooking.get().getId();
+            Long bookerId = nextBooking.get().getBooker().getId();
+            itemDto.setNextBooking(new ItemBookingDto(id, bookerId));
+        }
+
     }
 
     @Override

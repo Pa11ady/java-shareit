@@ -1,10 +1,12 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -20,6 +22,6 @@ public class ItemDto {
     private Boolean available;          //доступна или нет вещь для аренды
     private Long owner;                 //владелец вещи;
     private Long request;               //если создано по запросу, то ссылка на запрос
-    private LocalDateTime lastBooking;  //дата последнего бронирования
-    private LocalDateTime nextBooking;  //даты последнего следующего бронирования
+    private ItemBookingDto lastBooking; //последнее бронирование
+    private ItemBookingDto nextBooking; //следующего бронирования
 }

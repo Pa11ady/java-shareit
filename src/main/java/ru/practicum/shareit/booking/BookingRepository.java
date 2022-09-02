@@ -6,6 +6,7 @@ import ru.practicum.shareit.booking.model.Booking;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface BookingRepository  extends JpaRepository<Booking, Long> {
     @Query("select b from Booking b where ( " +
@@ -16,6 +17,7 @@ public interface BookingRepository  extends JpaRepository<Booking, Long> {
     List<Booking> findAllByDateAndId(Long itemId, LocalDateTime start, LocalDateTime end);
 
     //Пользователь смотрит свои заказы
+    //////////////////////////////////////////
     List<Booking> findAllByBookerId(Long bookerId);
 
     List<Booking> findAllByBookerIdAndStatus(Long bookerId, BookingStatus status);
@@ -28,9 +30,10 @@ public interface BookingRepository  extends JpaRepository<Booking, Long> {
             "b.start < :date and :date < b.end and " +
             "b.booker.id = :bookerId")
     List<Booking> findByBookerIdCurrDate(Long bookerId, LocalDateTime date);
+    //////////////////////////////////////////
 
     //Пользователь смотрит свои вещи, которые были заказаны другими.
-
+    //////////////////////////////////////////
     @Query("select b from Booking b where  " +
             "b.item.owner.id = :ownerId")
     List<Booking> findAllItemBooking(Long ownerId);
@@ -53,4 +56,11 @@ public interface BookingRepository  extends JpaRepository<Booking, Long> {
     @Query("select b from Booking b where  " +
             "b.item.owner.id = :ownerId and b.status = :status")
     List<Booking> findAllItemBookingStatus(Long ownerId, BookingStatus status);
+    //////////////////////////////////////////
+
+    //дата последнего бронирования
+    Optional<Booking> findFirstByItemIdAndEndBeforeOrderByEndDesc(Long itemId, LocalDateTime date);
+
+    //дата следующего бронирования
+    Optional<Booking> findFirstByItemIdAndStartAfterOrderByStart(Long itemId, LocalDateTime date);
 }
