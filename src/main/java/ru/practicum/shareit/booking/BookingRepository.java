@@ -19,5 +19,12 @@ public interface BookingRepository  extends JpaRepository<Booking, Long> {
 
     List<Booking> findALLByBookerIdAndStatus(Long bookerId, BookingStatus status);
 
-    List<Booking> findByBookerIdAndEndIsBefore(Long bookerId, LocalDateTime end);
+    List<Booking> findByBookerIdAndEndIsBefore(Long bookerId, LocalDateTime date);
+
+    List<Booking> findByBookerIdAndStartIsAfter(Long bookerId, LocalDateTime date);
+
+    @Query("select b from Booking b where  " +
+            "b.start <= :date and :date <= b.end or " +
+            "b.booker.id = :bookerId")
+    List<Booking> findByBookerIdCurrDate(Long bookerId, LocalDateTime date);
 }

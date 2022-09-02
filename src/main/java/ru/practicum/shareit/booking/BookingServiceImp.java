@@ -16,6 +16,7 @@ import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class BookingServiceImp implements BookingService {
         Long ownerId = booking.getItem().getOwner().getId();
 
         if (!userId.equals(bookerId) && !userId.equals(ownerId)) {
-            String message = "У пользователя " + userId + " нет прав на просмотр бронирования " + bookingId ;
+            String message = "У пользователя " + userId + " нет прав на просмотр бронирования " + bookingId;
             log.warn(message);
             throw new PermissionException(message);
         }
@@ -69,29 +70,39 @@ public class BookingServiceImp implements BookingService {
 
     @Override
     public List<BookingDto> findUserBooking(Long userId, String stateParam) {
-        BookingState state = BookingState.valueOf(stateParam);
+        BookingState state;
+        try {
+            state = BookingState.valueOf(stateParam);
+        } catch (IllegalArgumentException e) {
+            throw new StateIsNotSupportException("Unknown state: UNSUPPORTED_STATUS");
+        }
         userService.findById(userId);
-        List<Booking> bookings = null;
+        List<Booking> bookings;
 
         switch (state) {
             case ALL:
                 bookings = bookingRepository.findALLByBookerId(userId);
                 break;
             case PAST:
+                bookings = bookingRepository.findByBookerIdAndEndIsBefore(userId, LocalDateTime.now());
                 break;
             case FUTURE:
+                bookings = bookingRepository.findByBookerIdAndStartIsAfter(userId, LocalDateTime.now());
                 break;
             case CURRENT:
+                bookings = bookingRepository.findByBookerIdCurrDate(userId,  LocalDateTime.now());
                 break;
             case WAITING:
                 bookings = bookingRepository.findALLByBookerIdAndStatus(userId, BookingStatus.WAITING);
                 break;
             case REJECTED:
                 bookings = bookingRepository.findALLByBookerIdAndStatus(userId, BookingStatus.REJECTED);
+                break;
+            default:
+                bookings = new ArrayList<>();
         }
 
         bookings.sort(Comparator.comparing(Booking::getStart).reversed());
-
         return BookingMapper.mapToBookingDto(bookings);
 
     }
