@@ -17,6 +17,7 @@ import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -76,22 +77,22 @@ public class BookingServiceImp implements BookingService {
 
         switch (state) {
             case ALL:
-                bookings = bookingRepository.findALLByBookerId(userId);
+                bookings = bookingRepository.findAllByBookerId(userId);
                 break;
             case PAST:
-                bookings = bookingRepository.findByBookerIdAndEndIsBefore(userId, LocalDateTime.now());
+                bookings = bookingRepository.findAllByBookerIdAndEndIsBefore(userId, LocalDateTime.now());
                 break;
             case FUTURE:
-                bookings = bookingRepository.findByBookerIdAndStartIsAfter(userId, LocalDateTime.now());
+                bookings = bookingRepository.findAllByBookerIdAndStartIsAfter(userId, LocalDateTime.now());
                 break;
             case CURRENT:
                 bookings = bookingRepository.findByBookerIdCurrDate(userId,  LocalDateTime.now());
                 break;
             case WAITING:
-                bookings = bookingRepository.findALLByBookerIdAndStatus(userId, BookingStatus.WAITING);
+                bookings = bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.WAITING);
                 break;
             case REJECTED:
-                bookings = bookingRepository.findALLByBookerIdAndStatus(userId, BookingStatus.REJECTED);
+                bookings = bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.REJECTED);
                 break;
             default:
                 bookings = new ArrayList<>();
@@ -99,15 +100,39 @@ public class BookingServiceImp implements BookingService {
 
         bookings.sort(Comparator.comparing(Booking::getStart).reversed());
         return BookingMapper.mapToBookingDto(bookings);
-
     }
 
     @Override
-    public List<BookingDto> findAllByUserID(Long userId, String stateParam) {
+    public List<BookingDto> findItemBooking(Long userId, String stateParam) {
         BookingState state = stateToEnum(stateParam);
         userService.findById(userId);
         List<Booking> bookings;
-        return null;
+
+        switch (state) {
+            case ALL:
+                bookings = bookingRepository.findAllItemBooking(userId);
+                break;
+            case PAST:
+                bookings = bookingRepository.findAllItemBookingEndIsBefore(userId, LocalDateTime.now());
+                break;
+            case FUTURE:
+                bookings = bookingRepository.findAllItemBookingAndStartIsAfter(userId, LocalDateTime.now());
+                break;
+            case CURRENT:
+                bookings = bookingRepository.findAllItemBookingCurrDate(userId,  LocalDateTime.now());
+                break;
+            case WAITING:
+                bookings = bookingRepository.findAllItemBookingStatus(userId, BookingStatus.WAITING);
+                break;
+            case REJECTED:
+                bookings = bookingRepository.findAllItemBookingStatus(userId, BookingStatus.REJECTED);
+                break;
+            default:
+                bookings = new ArrayList<>();
+        }
+
+        bookings.sort(Comparator.comparing(Booking::getStart).reversed());
+        return BookingMapper.mapToBookingDto(bookings);
     }
 
     @Transactional

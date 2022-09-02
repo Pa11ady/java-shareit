@@ -37,7 +37,7 @@ public class BookingController {
     public List<BookingDto> findItemBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
                                          @RequestParam(defaultValue = "ALL", name = "state") String stateParam) {
         //все бронирования Вещей пользователя (другими)
-        return bookingService.findAllByUserID(userId, stateParam);
+        return bookingService.findItemBooking(userId, stateParam);
     }
 
     @PatchMapping("/{bookingId}")
