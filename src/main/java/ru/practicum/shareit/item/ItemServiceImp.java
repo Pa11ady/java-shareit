@@ -51,20 +51,22 @@ public class ItemServiceImp implements ItemService {
     private void loadBookingDates(ItemDto itemDto) {
         Optional<Booking> lastBooking = bookingRepository.findFirstByItemIdAndEndBeforeOrderByEndDesc(itemDto.getId(),
                 LocalDateTime.now());
-        if (lastBooking.isPresent()) {
-            Long id = lastBooking.get().getId();
-            Long bookerId = lastBooking.get().getBooker().getId();
-            itemDto.setLastBooking(new ItemBookingDto(id, bookerId));
-        }
+        itemDto.setLastBooking(mapToItemBookingDto(lastBooking));
 
         Optional<Booking> nextBooking = bookingRepository.findFirstByItemIdAndStartAfterOrderByStart(itemDto.getId(),
                 LocalDateTime.now());
-        if (nextBooking.isPresent()) {
-            Long id = nextBooking.get().getId();
-            Long bookerId = nextBooking.get().getBooker().getId();
-            itemDto.setNextBooking(new ItemBookingDto(id, bookerId));
-        }
+        itemDto.setNextBooking(mapToItemBookingDto(nextBooking));
+    }
 
+     private ItemBookingDto mapToItemBookingDto(Optional<Booking> booking) {
+         if (booking.isPresent()) {
+             Long id = booking.get().getId();
+             Long bookerId = booking.get().getBooker().getId();
+             LocalDateTime start = booking.get().getStart();
+             LocalDateTime end = booking.get().getEnd();
+             return new ItemBookingDto(id, bookerId, start, end);
+         }
+         return null;
     }
 
     @Override
