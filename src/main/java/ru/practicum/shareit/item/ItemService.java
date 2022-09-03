@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.PatchItemDto;
 import ru.practicum.shareit.item.model.Item;
@@ -17,5 +18,7 @@ public interface ItemService {
 
     ItemDto update(Long userId, Long itemId, PatchItemDto patchItemDto);
 
-    public void checkPermissions(Long userId, Item item);
+    void checkPermissions(Long userId, Item item);
+
+    CommentDto createComment(Long userId, Long itemId, CommentDto commentDto);
 }

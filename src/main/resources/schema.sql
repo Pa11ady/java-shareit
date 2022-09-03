@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS comments (
     text varchar(500) NOT NULL,
     item_id bigint NOT NULL,
     user_id bigint NOT NULL,
+    created timestamp without time zone NOT NULL,
     CONSTRAINT fk_comments_item_id FOREIGN KEY(item_id) REFERENCES items (item_id) ON DELETE CASCADE,
     CONSTRAINT fk_comments_user_id FOREIGN KEY(user_id) REFERENCES users (user_id) ON DELETE CASCADE
 );

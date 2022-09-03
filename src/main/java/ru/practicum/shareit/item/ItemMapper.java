@@ -8,6 +8,7 @@ import ru.practicum.shareit.requests.ItemRequest;
 import ru.practicum.shareit.user.User;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -21,7 +22,8 @@ public class ItemMapper {
                 item.getOwner() != null ? item.getOwner().getId() : null,
                 item.getRequest() != null ? item.getRequest().getId() : null,
                 null,
-                null
+                null,
+                Collections.EMPTY_LIST
         );
     }
 

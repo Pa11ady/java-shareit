@@ -8,6 +8,10 @@ import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.common.exception.NotFoundException;
 import ru.practicum.shareit.common.exception.PermissionException;
+import ru.practicum.shareit.item.comment.CommentMapper;
+import ru.practicum.shareit.item.comment.CommentRepository;
+import ru.practicum.shareit.item.comment.dto.CommentDto;
+import ru.practicum.shareit.item.comment.model.Comment;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.PatchItemDto;
@@ -27,6 +31,7 @@ public class ItemServiceImp implements ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
     private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     @Override
@@ -106,6 +111,16 @@ public class ItemServiceImp implements ItemService {
         }
 
         return ItemMapper.mapToItemDto(itemRepository.save(item));
+    }
+
+    @Transactional
+    @Override
+    public CommentDto createComment(Long userId, Long itemId, CommentDto commentDto) {
+        User author = UserMapper.mapToUser(userService.findById(userId));
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> throwNotFoundException(itemId));
+
+        Comment comment = CommentMapper.mapToComment(author, item, commentDto, LocalDateTime.now());
+        return CommentMapper.mapToCommentDto(commentRepository.save(comment));
     }
 
     public void checkPermissions(Long userId, Item item) {
