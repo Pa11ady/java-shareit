@@ -8,6 +8,8 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentMapper {
@@ -18,7 +20,16 @@ public class CommentMapper {
         commentDto.setText(comment.getText());
         commentDto.setAuthorName(comment.getAuthor().getName());
         return  commentDto;
+    }
 
+    public static List<CommentDto> mapToCommentDto(Iterable<Comment> comments) {
+        List<CommentDto> result = new ArrayList<>();
+
+        for (var el : comments) {
+            result.add(mapToCommentDto(el));
+        }
+
+        return result;
     }
 
     public static Comment mapToComment(User author, Item item, CommentDto commentDto, LocalDateTime date) {

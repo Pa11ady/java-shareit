@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -63,4 +64,10 @@ public interface BookingRepository  extends JpaRepository<Booking, Long> {
 
     //дата следующего бронирования
     Optional<Booking> findFirstByItemIdAndStartAfterOrderByStart(Long itemId, LocalDateTime date);
+
+    //Пользователь хотя бы раз бронировал вещь
+    Optional<Booking> findFirstByBookerAndItemIdAndEndBefore(User booker, Long itemId, LocalDateTime date);
+
+    //Пользователь забронировал на будущее
+    Optional<Booking> findFirstByBookerAndItemIdAndStartAfter(User booker, Long itemId, LocalDateTime date);
 }

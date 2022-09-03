@@ -2,12 +2,14 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.common.exception.NotFoundException;
 import ru.practicum.shareit.common.exception.PermissionException;
+import ru.practicum.shareit.common.exception.UserCommentException;
 import ru.practicum.shareit.item.comment.CommentMapper;
 import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
@@ -45,11 +47,14 @@ public class ItemServiceImp implements ItemService {
     public ItemDto findByItemId(Long userId, Long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> throwNotFoundException(itemId));
         ItemDto itemDto = ItemMapper.mapToItemDto(item);
-        Long ownerId = item.getOwner().getId();
+        List<Comment> comments = commentRepository.findAllByItemId(itemId, Sort.by("id"));
+        itemDto.setComments(CommentMapper.mapToCommentDto(comments));
 
+        Long ownerId = item.getOwner().getId();
         if (ownerId.equals(userId)) {
             loadBookingDates(itemDto);
         }
+
         return itemDto;
     }
 
@@ -117,6 +122,8 @@ public class ItemServiceImp implements ItemService {
     @Override
     public CommentDto createComment(Long userId, Long itemId, CommentDto commentDto) {
         User author = UserMapper.mapToUser(userService.findById(userId));
+        bookingRepository.findFirstByBookerAndItemIdAndEndBefore(author, itemId, LocalDateTime.now()).orElseThrow(
+                () -> throwUserCommentException(userId));
         Item item = itemRepository.findById(itemId).orElseThrow(() -> throwNotFoundException(itemId));
 
         Comment comment = CommentMapper.mapToComment(author, item, commentDto, LocalDateTime.now());
@@ -135,5 +142,11 @@ public class ItemServiceImp implements ItemService {
         String message = "Предмет с id " + id + " не найден!";
         log.warn(message);
         throw new NotFoundException(message);
+    }
+
+    private NotFoundException throwUserCommentException(Long id) {
+        String message = "Пользователь с id " + id + "не имеет прав комментировать";
+        log.warn(message);
+        throw new UserCommentException(message);
     }
 }

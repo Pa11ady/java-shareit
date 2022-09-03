@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.shareit.item.comment.model.Comment;
+import ru.practicum.shareit.item.comment.dto.CommentDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -26,5 +26,5 @@ public class ItemDto {
     private Long request;               //если создано по запросу, то ссылка на запрос
     private ItemBookingDto lastBooking; //последнее бронирование
     private ItemBookingDto nextBooking; //следующего бронирования
-    private List<Comment> comments;     //комментарий арендатора
+    private List<CommentDto> comments;  //комментарий арендатора
 }
