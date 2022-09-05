@@ -5,8 +5,12 @@ import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.PostBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +22,10 @@ public class BookingMapper {
         bookingDto.setId(booking.getId());
         bookingDto.setStart(booking.getStart());
         bookingDto.setEnd(booking.getEnd());
-        bookingDto.setItem(booking.getItem());
-        bookingDto.setBooker(booking.getBooker());
+        ItemDto itemDto = ItemMapper.mapToItemDto(booking.getItem());
+        bookingDto.setItem(itemDto);
+        UserDto bookerDto = UserMapper.mapToUserDto(booking.getBooker());
+        bookingDto.setBooker(bookerDto);
         bookingDto.setStatus(booking.getStatus());
         return bookingDto;
     }

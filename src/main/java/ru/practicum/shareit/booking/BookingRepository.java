@@ -67,7 +67,4 @@ public interface BookingRepository  extends JpaRepository<Booking, Long> {
 
     //Пользователь хотя бы раз бронировал вещь
     Optional<Booking> findFirstByBookerAndItemIdAndEndBefore(User booker, Long itemId, LocalDateTime date);
-
-    //Пользователь забронировал на будущее
-    Optional<Booking> findFirstByBookerAndItemIdAndStartAfter(User booker, Long itemId, LocalDateTime date);
 }
