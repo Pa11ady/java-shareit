@@ -1,7 +1,7 @@
 package ru.practicum.shareit.user;
 
-import ru.practicum.shareit.common.repository.CommonRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends CommonRepository<User> {
-    boolean containsEmail(String email);
+public interface UserRepository extends JpaRepository<User, Long> {
+    boolean existsByEmail(String email);
 }

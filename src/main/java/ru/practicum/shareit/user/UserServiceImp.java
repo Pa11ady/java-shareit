@@ -1,41 +1,35 @@
 package ru.practicum.shareit.user;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.common.exception.NotFoundException;
 import ru.practicum.shareit.common.exception.UserAlreadyExistException;
 import ru.practicum.shareit.user.dto.PatchUserDto;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class UserServiceImp implements UserService {
     private final UserRepository userRepository;
 
-    @Autowired
-    public UserServiceImp(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
+    @Transactional
     @Override
     public UserDto create(UserDto userDto) {
-        checkEmail(userDto.getEmail());
-        User user = userRepository.create(UserMapper.mapToUser(userDto));
+        //checkEmail(userDto.getEmail());
+        User user = userRepository.save(UserMapper.mapToUser(userDto));
         return UserMapper.mapToUserDto(user);
     }
 
     @Override
     public UserDto findById(Long id) {
-        User user = userRepository.findById(id);
-        if (user == null) {
-            String message = ("Пользователь с id " +
-                    id + " не найден!.");
-            log.warn(message);
-            throw new NotFoundException(message);
-        }
+        User user = userRepository.findById(id).orElseThrow(() -> throwNotFoundException(id));
         return UserMapper.mapToUserDto(user);
     }
 
@@ -45,9 +39,10 @@ public class UserServiceImp implements UserService {
         return UserMapper.mapToUserDto(users);
     }
 
+    @Transactional
     @Override
     public UserDto update(Long id, PatchUserDto patchUserDto) {
-        User user = userRepository.findById(id);
+        User user = userRepository.findById(id).orElseThrow(() -> throwNotFoundException(id));
         if (patchUserDto.getName() != null) {
             user.setName(patchUserDto.getName());
         }
@@ -56,20 +51,27 @@ public class UserServiceImp implements UserService {
             user.setEmail(patchUserDto.getEmail());
         }
 
-        return UserMapper.mapToUserDto(userRepository.update(user));
+        return UserMapper.mapToUserDto(userRepository.save(user));
     }
 
+    @Transactional
     @Override
     public void delete(Long id) {
-        userRepository.delete(id);
+        Optional<User> user = userRepository.findById(id);
+        user.ifPresent(userRepository::delete);
     }
 
     private void checkEmail(String email) {
-        if (userRepository.containsEmail(email)) {
-            String message = ("Пользователь с электронной почтой " +
-                    email + " уже зарегистрирован.");
+      if (userRepository.existsByEmail(email)) {
+            String message = "Пользователь с электронной почтой " + email + " уже зарегистрирован.";
             log.warn(message);
             throw new UserAlreadyExistException(message);
         }
+    }
+
+    private NotFoundException throwNotFoundException(Long id) {
+        String message = "Пользователь с id " + id + " не найден!.";
+        log.warn(message);
+        return new NotFoundException(message);
     }
 }
