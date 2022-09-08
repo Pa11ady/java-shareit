@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.dto.PostItemRequestDto;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -15,7 +16,7 @@ public class ItemRequestController {
 
     @PostMapping
     public ItemRequestDto create(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                 @RequestBody PostItemRequestDto itemRequest) {
+                                 @Valid  @RequestBody PostItemRequestDto itemRequest) {
         return itemRequestService.create(userId, itemRequest);
     }
 

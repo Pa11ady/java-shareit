@@ -6,7 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.dto.PostItemRequestDto;
+import ru.practicum.shareit.requests.model.ItemRequest;
+import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.UserService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -14,9 +19,16 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ItemRequestServiceImp implements ItemRequestService {
+    private final UserService userService;
+    private final ItemRequestRepository itemRequestRepository;
+
+    @Transactional
     @Override
     public ItemRequestDto create(Long userId, PostItemRequestDto postItemRequestDto) {
-        return null;
+        User requester = UserMapper.mapToUser(userService.findById(userId));
+        ItemRequest ItemRequest = ItemRequestMapper.mapToItemRequest(requester, postItemRequestDto,
+                LocalDateTime.now());
+        return ItemRequestMapper.mapToItemRequestDto(itemRequestRepository.save(ItemRequest));
     }
 
     @Override
