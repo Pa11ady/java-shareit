@@ -2,6 +2,7 @@ package ru.practicum.shareit.requests;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
@@ -33,7 +34,9 @@ public class ItemRequestServiceImp implements ItemRequestService {
 
     @Override
     public List<ItemRequestDto> findAllByUserID(Long userId) {
-        return null;
+        userService.findById(userId);
+        List<ItemRequest> itemRequests = itemRequestRepository.findAllByRequesterId(userId, Sort.by("created"));
+        return ItemRequestMapper.mapToItemRequestDto(itemRequests);
     }
 
     @Override

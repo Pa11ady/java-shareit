@@ -16,5 +16,5 @@ public class ItemRequestDto {
     private Long id;
     private String description;    //описание вещи;
     private UserDto requester;     //пользователь, создавший запрос
-    private LocalDateTime create;  //дата и время создания запроса
+    private LocalDateTime created;  //дата и время создания запроса
 }

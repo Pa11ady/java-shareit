@@ -31,7 +31,8 @@ public class Item {
     @JoinColumn(name = "user_id", nullable = false)
     private User owner;             //владелец вещи;
 
-    @Transient
+    @ManyToOne
+    @JoinColumn(name = "request_id")
     private ItemRequest request;    //если создано по запросу, то ссылка на запрос
 
     @Override

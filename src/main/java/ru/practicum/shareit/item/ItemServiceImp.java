@@ -18,6 +18,8 @@ import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.PatchItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.requests.ItemRequestRepository;
+import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserService;
@@ -34,12 +36,19 @@ public class ItemServiceImp implements ItemService {
     private final UserService userService;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Transactional
     @Override
     public ItemDto create(Long userId, ItemDto itemDto) {
         User owner = UserMapper.mapToUser(userService.findById(userId));
-        Item item = itemRepository.save(ItemMapper.mapToItem(owner, null, itemDto));
+        ItemRequest itemRequest = null;
+        Long requestId = itemDto.getRequestId();
+        if (requestId != null) {
+            itemRequest = itemRequestRepository.findById(requestId).orElseThrow(() ->
+                    throwNotFoundException(requestId));
+        }
+        Item item = itemRepository.save(ItemMapper.mapToItem(owner, itemRequest, itemDto));
         return ItemMapper.mapToItemDto(item);
     }
 
@@ -139,7 +148,7 @@ public class ItemServiceImp implements ItemService {
     }
 
     private NotFoundException throwNotFoundException(Long id) {
-        String message = "Предмет с id " + id + " не найден!";
+        String message = "id " + id + " не найдено!";
         log.warn(message);
         throw new NotFoundException(message);
     }
