@@ -10,7 +10,7 @@ public interface ItemRequestService {
 
     List<ItemRequestDto> findAllByUserID(Long userId);
 
-    List<ItemRequestDto> findAll(Integer from, Integer size);
+    List<ItemRequestDto> findAll(Long  userId, Integer from, Integer size);
 
     ItemRequestDto findById(Long userId, Long requestId);
 }
