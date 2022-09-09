@@ -21,7 +21,7 @@ public class ItemRequestController {
     }
 
     @GetMapping
-    public List<ItemRequestDto> findAllByUserID(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemRequestDto> findAllByUserId(@RequestHeader("X-Sharer-User-Id") Long userId) {
         return itemRequestService.findAllByUserID(userId);
     }
 
@@ -32,8 +32,7 @@ public class ItemRequestController {
     }
 
     @GetMapping("/{requestId}")
-    public ItemRequestDto findById(@PathVariable Long requestId) {
-        return itemRequestService.findById(requestId);
+    public ItemRequestDto findById(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long requestId) {
+        return itemRequestService.findById(userId, requestId);
     }
-
 }
