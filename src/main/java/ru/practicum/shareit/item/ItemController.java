@@ -26,14 +26,23 @@ public class ItemController {
         return itemService.findByItemId(userId, itemId);
     }
 
-    @GetMapping
-    public List<ItemDto> findAllByUserID(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemService.findAllByUserID(userId);
+    @GetMapping()
+    public List<ItemDto> findAllByUserID(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                         @RequestParam(defaultValue = "0") Integer from,
+                                         @RequestParam(defaultValue = "10") Integer size) {
+        return itemService.findAllByUserID(userId, from, size);
     }
 
-    @GetMapping("/search")
+    /*@GetMapping("/search")
     public List<ItemDto> search(@RequestParam  String text) {
         return itemService.search(text);
+    }*/
+
+    @GetMapping("/search")
+    public List<ItemDto> search(@RequestParam  String text,
+                                @RequestParam(defaultValue = "0") Integer from,
+                                @RequestParam(defaultValue = "10") Integer size) {
+        return itemService.search(text, from, size);
     }
 
     @PatchMapping("/{itemId}")

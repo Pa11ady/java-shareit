@@ -2,11 +2,13 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.common.OffsetPage;
 import ru.practicum.shareit.common.exception.NotFoundException;
 import ru.practicum.shareit.common.exception.PermissionException;
 import ru.practicum.shareit.common.exception.UserCommentException;
@@ -99,6 +101,16 @@ public class ItemServiceImp implements ItemService {
     }
 
     @Override
+    public List<ItemDto> findAllByUserID(Long userId, Integer from, Integer size) {
+        userService.findById(userId);
+        Pageable pageable = new OffsetPage(from, size, Sort.by("id"));
+        List<Item> items = itemRepository.findAllByOwnerId(userId, pageable);
+        List<ItemDto> dtoItems = ItemMapper.mapToItemDto(items);
+        dtoItems.forEach(this::loadBookingDates);
+        return dtoItems;
+    }
+
+    @Override
     public List<ItemDto> search(String text) {
         if (text.isBlank()) {
             return Collections.emptyList();
@@ -106,6 +118,16 @@ public class ItemServiceImp implements ItemService {
        List<Item> items = itemRepository.search(text);
 
        return ItemMapper.mapToItemDto(items);
+    }
+
+    @Override
+    public List<ItemDto> search(String text, Integer from, Integer size) {
+        if (text.isBlank()) {
+            return Collections.emptyList();
+        }
+        Pageable pageable = new OffsetPage(from, size);
+        List<Item> items = itemRepository.search(text, pageable);
+        return ItemMapper.mapToItemDto(items);
     }
 
     @Transactional
