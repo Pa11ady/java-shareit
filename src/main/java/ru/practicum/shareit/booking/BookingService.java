@@ -13,7 +13,12 @@ public interface BookingService {
 
     List<BookingDto> findUserBooking(Long userId, String stateParam);
 
+    List<BookingDto> findUserBooking(Long userId, String stateParam, Integer from, Integer size);
+
     List<BookingDto> findItemBooking(Long userId, String stateParam);
 
+    List<BookingDto> findItemBooking(Long userId, String stateParam, Integer from, Integer size);
+
     BookingDto approveBooking(Long userId, Long bookingId, Boolean approved);
+
 }

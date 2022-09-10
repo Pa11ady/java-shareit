@@ -28,16 +28,20 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDto> findUserBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                            @RequestParam(defaultValue = "ALL", name = "state") String stateParam) {
+                                            @RequestParam(defaultValue = "ALL", name = "state") String stateParam,
+                                            @RequestParam(defaultValue = "0") Integer from,
+                                            @RequestParam(defaultValue = "10") Integer size) {
         //получить бронирования текущего пользователя (его)
-        return bookingService.findUserBooking(userId, stateParam);
+        return bookingService.findUserBooking(userId, stateParam, from, size);
     }
 
    @GetMapping("/owner")
     public List<BookingDto> findItemBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                         @RequestParam(defaultValue = "ALL", name = "state") String stateParam) {
+                                            @RequestParam(defaultValue = "ALL", name = "state") String stateParam,
+                                            @RequestParam(defaultValue = "0") Integer from,
+                                            @RequestParam(defaultValue = "10") Integer size) {
         //все бронирования Вещей пользователя (другими)
-        return bookingService.findItemBooking(userId, stateParam);
+        return bookingService.findItemBooking(userId, stateParam, from, size);
     }
 
     @PatchMapping("/{bookingId}")
