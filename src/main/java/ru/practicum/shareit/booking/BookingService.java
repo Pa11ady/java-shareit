@@ -11,11 +11,7 @@ public interface BookingService {
 
     BookingDto findById(Long userId, Long bookingId);
 
-    List<BookingDto> findUserBooking(Long userId, String stateParam);
-
     List<BookingDto> findUserBooking(Long userId, String stateParam, Integer from, Integer size);
-
-    List<BookingDto> findItemBooking(Long userId, String stateParam);
 
     List<BookingDto> findItemBooking(Long userId, String stateParam, Integer from, Integer size);
 

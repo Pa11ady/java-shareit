@@ -91,16 +91,6 @@ public class ItemServiceImp implements ItemService {
     }
 
     @Override
-    public List<ItemDto> findAllByUserID(Long userId) {
-        userService.findById(userId);   //исключение, если пользователь не найден
-        List<Item> items = itemRepository.findAllByOwnerId(userId);
-        items.sort(Comparator.comparing(Item::getId));
-        List<ItemDto> dtoItems = ItemMapper.mapToItemDto(items);
-        dtoItems.forEach(this::loadBookingDates);
-        return dtoItems;
-    }
-
-    @Override
     public List<ItemDto> findAllByUserID(Long userId, Integer from, Integer size) {
         userService.findById(userId);
         Pageable pageable = new OffsetPage(from, size, Sort.by("id"));
@@ -108,16 +98,6 @@ public class ItemServiceImp implements ItemService {
         List<ItemDto> dtoItems = ItemMapper.mapToItemDto(items);
         dtoItems.forEach(this::loadBookingDates);
         return dtoItems;
-    }
-
-    @Override
-    public List<ItemDto> search(String text) {
-        if (text.isBlank()) {
-            return Collections.emptyList();
-        }
-       List<Item> items = itemRepository.search(text);
-
-       return ItemMapper.mapToItemDto(items);
     }
 
     @Override

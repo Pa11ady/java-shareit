@@ -33,11 +33,6 @@ public class ItemController {
         return itemService.findAllByUserID(userId, from, size);
     }
 
-    /*@GetMapping("/search")
-    public List<ItemDto> search(@RequestParam  String text) {
-        return itemService.search(text);
-    }*/
-
     @GetMapping("/search")
     public List<ItemDto> search(@RequestParam  String text,
                                 @RequestParam(defaultValue = "0") Integer from,
@@ -56,5 +51,4 @@ public class ItemController {
                                     @Valid @RequestBody CommentDto commentDto) {
         return itemService.createComment(userId, itemId, commentDto);
     }
-
 }

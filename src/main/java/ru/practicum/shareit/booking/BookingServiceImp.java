@@ -20,7 +20,6 @@ import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -72,39 +71,6 @@ public class BookingServiceImp implements BookingService {
     }
 
     @Override
-    public List<BookingDto> findUserBooking(Long userId, String stateParam) {
-        BookingState state = stateToEnum(stateParam);
-        userService.findById(userId);
-        List<Booking> bookings;
-
-        switch (state) {
-            case ALL:
-                bookings = bookingRepository.findAllByBookerId(userId);
-                break;
-            case PAST:
-                bookings = bookingRepository.findAllByBookerIdAndEndIsBefore(userId, LocalDateTime.now());
-                break;
-            case FUTURE:
-                bookings = bookingRepository.findAllByBookerIdAndStartIsAfter(userId, LocalDateTime.now());
-                break;
-            case CURRENT:
-                bookings = bookingRepository.findByBookerIdCurrDate(userId,  LocalDateTime.now());
-                break;
-            case WAITING:
-                bookings = bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.WAITING);
-                break;
-            case REJECTED:
-                bookings = bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.REJECTED);
-                break;
-            default:
-                bookings = new ArrayList<>();
-        }
-
-        bookings.sort(Comparator.comparing(Booking::getStart).reversed());
-        return BookingMapper.mapToBookingDto(bookings);
-    }
-
-    @Override
     public List<BookingDto> findUserBooking(Long userId, String stateParam, Integer from, Integer size) {
         BookingState state = stateToEnum(stateParam);
         userService.findById(userId);
@@ -134,40 +100,6 @@ public class BookingServiceImp implements BookingService {
                 bookings = new ArrayList<>();
         }
 
-        return BookingMapper.mapToBookingDto(bookings);
-    }
-
-
-    @Override
-    public List<BookingDto> findItemBooking(Long userId, String stateParam) {
-        BookingState state = stateToEnum(stateParam);
-        userService.findById(userId);
-        List<Booking> bookings;
-
-        switch (state) {
-            case ALL:
-                bookings = bookingRepository.findAllItemBooking(userId);
-                break;
-            case PAST:
-                bookings = bookingRepository.findAllItemBookingEndIsBefore(userId, LocalDateTime.now());
-                break;
-            case FUTURE:
-                bookings = bookingRepository.findAllItemBookingAndStartIsAfter(userId, LocalDateTime.now());
-                break;
-            case CURRENT:
-                bookings = bookingRepository.findAllItemBookingCurrDate(userId,  LocalDateTime.now());
-                break;
-            case WAITING:
-                bookings = bookingRepository.findAllItemBookingStatus(userId, BookingStatus.WAITING);
-                break;
-            case REJECTED:
-                bookings = bookingRepository.findAllItemBookingStatus(userId, BookingStatus.REJECTED);
-                break;
-            default:
-                bookings = new ArrayList<>();
-        }
-
-        bookings.sort(Comparator.comparing(Booking::getStart).reversed());
         return BookingMapper.mapToBookingDto(bookings);
     }
 
