@@ -62,7 +62,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void create() throws Exception{
+    void create() throws Exception {
         when(itemService.create(any(Long.class), any()))
                 .thenReturn(itemDto);
         mvc.perform(post("/items")
@@ -151,7 +151,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void createComment() throws Exception{
+    void createComment() throws Exception {
         when(itemService.createComment(any(Long.class), any(Long.class), any()))
                 .thenReturn(commentDto);
         mvc.perform(post("/items/1/comment")

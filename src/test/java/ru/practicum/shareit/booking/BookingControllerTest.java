@@ -164,7 +164,7 @@ class BookingControllerTest {
     }
 
     @Test
-    void approveRequest() throws Exception{
+    void approveRequest() throws Exception {
         when(bookingService.approveBooking(any(Long.class), any(Long.class), any(Boolean.class)))
                 .thenReturn(bookingDto);
 

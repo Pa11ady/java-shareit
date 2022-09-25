@@ -75,7 +75,7 @@ class UserControllerTest {
     }
 
     @Test
-    void findAll() throws Exception{
+    void findAll() throws Exception {
         when(userService.findAll())
                 .thenReturn(listUserDto);
         mvc.perform(get("/users")
