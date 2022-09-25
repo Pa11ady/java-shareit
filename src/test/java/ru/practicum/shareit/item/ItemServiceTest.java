@@ -128,8 +128,8 @@ public class ItemServiceTest {
             throw new RuntimeException(e);
         }
         CommentDto commentDto = new CommentDto(1L, "Comment1", newUserDto.getName(),  LocalDateTime.now());
-        itemService.createComment(newItemDto.getId(), newUserDto.getId(), commentDto);
-        newItemDto = itemService.findByItemId(newUserDto.getId(), newUserDto.getId());
+        itemService.createComment(newUserDto.getId(), newItemDto.getId(), commentDto);
+        newItemDto = itemService.findByItemId(newUserDto.getId(), newItemDto.getId());
         assertEquals(1, newItemDto.getComments().size());
     }
 }
