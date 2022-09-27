@@ -6,6 +6,8 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.PostBookingDto;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -29,8 +31,8 @@ public class BookingController {
     @GetMapping
     public List<BookingDto> findUserBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
                                             @RequestParam(defaultValue = "ALL", name = "state") String stateParam,
-                                            @RequestParam(defaultValue = "0") Integer from,
-                                            @RequestParam(defaultValue = "10") Integer size) {
+                                            @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
+                                            @Positive @RequestParam(defaultValue = "10") Integer size) {
         //получить бронирования текущего пользователя (его)
         return bookingService.findUserBooking(userId, stateParam, from, size);
     }
@@ -38,8 +40,8 @@ public class BookingController {
    @GetMapping("/owner")
     public List<BookingDto> findItemBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
                                             @RequestParam(defaultValue = "ALL", name = "state") String stateParam,
-                                            @RequestParam(defaultValue = "0") Integer from,
-                                            @RequestParam(defaultValue = "10") Integer size) {
+                                            @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
+                                            @Positive @RequestParam(defaultValue = "10") Integer size) {
         //все бронирования Вещей пользователя (другими)
         return bookingService.findItemBooking(userId, stateParam, from, size);
     }
