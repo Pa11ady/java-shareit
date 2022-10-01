@@ -23,7 +23,7 @@ public class ItemDto {
     @NotNull
     private Boolean available;          //доступна или нет вещь для аренды
     private Long owner;                 //владелец вещи;
-    private Long request;               //если создано по запросу, то ссылка на запрос
+    private Long requestId;             //если создано по запросу, то ссылка на запрос
     private ItemBookingDto lastBooking; //последнее бронирование
     private ItemBookingDto nextBooking; //следующего бронирования
     private List<CommentDto> comments;  //комментарий арендатора
