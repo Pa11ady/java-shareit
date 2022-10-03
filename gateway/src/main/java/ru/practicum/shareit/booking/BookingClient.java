@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
+import ru.practicum.shareit.booking.dto.PostBookingDto;
 import ru.practicum.shareit.client.BaseClient;
 
 import java.util.Map;
@@ -36,12 +36,28 @@ public class BookingClient extends BaseClient {
         return get("?state={state}&from={from}&size={size}", userId, parameters);
     }
 
-
-    public ResponseEntity<Object> bookItem(long userId, BookItemRequestDto requestDto) {
-        return post("", userId, requestDto);
-    }
-
     public ResponseEntity<Object> getBooking(long userId, Long bookingId) {
         return get("/" + bookingId, userId);
+    }
+
+    public ResponseEntity<Object> create(Long userId, PostBookingDto postBookingDto) {
+        return null;
+    }
+
+    public ResponseEntity<Object> findById(Long userId, Long bookingId) {
+        return null;
+    }
+
+
+    public ResponseEntity<Object> approveBooking(Long userId, Long bookingId, Boolean approved) {
+        return null;
+    }
+
+    public ResponseEntity<Object> findUserBooking(Long userId, BookingState state, Integer from, Integer size) {
+        return null;
+    }
+
+    public ResponseEntity<Object> findItemBooking(Long userId, BookingState state, Integer from, Integer size) {
+        return null;
     }
 }
