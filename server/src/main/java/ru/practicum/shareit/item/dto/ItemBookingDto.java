@@ -23,7 +23,6 @@ public class ItemBookingDto {
     @NoArgsConstructor
     public static class CommentDto {
         private  Long id;
-        @NotBlank
         private  String text;           //содержимое комментария;
         private String authorName;      //автор комментария;
         private LocalDateTime created;  //дата создания

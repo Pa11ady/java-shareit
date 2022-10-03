@@ -12,8 +12,6 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.PatchItemDto;
 
-import java.util.List;
-
 @Service
 public class ItemClient extends BaseClient {
     private static final String API_PREFIX = "/items";
@@ -29,26 +27,28 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> create(Long userId, ItemDto item) {
-        return null;
+        return post("", userId, item);
     }
 
     public ResponseEntity<Object> findByItemId(Long userId, Long itemId) {
-        return null;
+        return get("/" + itemId, userId);
     }
 
     public ResponseEntity<Object> findAllByUserID(Long userId, Integer from, Integer size) {
-        return null;
+        String path = "?from=" + from + "&size=" + size;
+        return get(path, userId);
     }
 
     public ResponseEntity<Object> search(String text, Integer from, Integer size) {
-        return null;
+        String path = "/search?text=" + text + "&from=" + from + "&size=" + size;
+        return get(path);
     }
 
     public ResponseEntity<Object> update(Long userId, Long itemId, PatchItemDto item) {
-        return null;
+        return  patch("/" + itemId, userId, item);
     }
 
     public ResponseEntity<Object> createComment(Long userId, Long itemId, CommentDto commentDto) {
-        return null;
+        return post("/" + itemId + "/comment", userId, commentDto);
     }
 }

@@ -26,21 +26,22 @@ public class UserClient extends BaseClient {
     }
 
     public ResponseEntity<Object> create(UserDto user) {
-        return null;
+        return post("", user);
     }
 
     public ResponseEntity<Object> findById(Long id) {
-        return null;
+        return get("/" + id);
     }
 
     public ResponseEntity<Object> findAll() {
-        return null;
+        return get("");
     }
 
     public ResponseEntity<Object> update(Long id, PatchUserDto user) {
-        return null;
+        return patch("/" + id, user);
     }
 
-    public void delete(Long id) {
+    public ResponseEntity<Object> delete(Long id) {
+       return delete("/" + id);
     }
 }
