@@ -16,4 +16,16 @@ public class ItemBookingDto {
     private Long bookerId;
     private LocalDateTime start;
     private LocalDateTime end;
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CommentDto {
+        private  Long id;
+        @NotBlank
+        private  String text;           //содержимое комментария;
+        private String authorName;      //автор комментария;
+        private LocalDateTime created;  //дата создания
+    }
 }
